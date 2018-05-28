@@ -1,8 +1,8 @@
 @extends('layouts.app')
 @section('page-title', 'Blogs')
 @section('content')
-
     @include('layouts.navbar')
+
     <div class="container">
         <div class="row">
             <div class="col-sm-2">
@@ -66,9 +66,7 @@
     <script type="text/javascript">
         jQuery('#datepicker').datepicker();
         //javascript function where sending ajax request with list of categories Ids.
-        $('#categories').on('hidden.bs.select', function (data, e) {
-            applyFilter();
-        });
+
         //tracking event for author_name FilterController
         $('#author_name_submit').click(function () {
             applyFilter();
@@ -95,24 +93,25 @@
         }
 
         //calling the function at three places so made a single function instead
-        function appendtheList(status, filter) {
-            $('.result-heading').html('<h1>Result based on ' + filter + ' filter </h1>')
+        function appendtheList(status) {
+            $('.result-heading').html('<h1>Result based on filter </h1>');
             $('.list-group').html('');
             $.each(status, function (index, value) {
+                console.log(value);
                 $.each(value, function (index, value) {
-                    var Html = '<li class="list-group-item">' +
-                        '<div>\n' +
-                        '<h3>'+value.title+'</h3>\n' +
-                        '</div>' +
-                        '<div> ' + value.blogtext +
-                        '</div>' +
-                        '<div style="margin-top: 20px">' +
-                        '<span><strong>written by </strong></span>' + value.author +
-                        '<span><strong> on </strong></span>' + value.date_created +
-                        '</div>' +
-                        '</li><br/><br/>'
-                    $('.list-group').prepend(Html);
-                });
+                        var Html = '<li class="list-group-item" style="word-wrap:break-word;">' +
+                            '<div>' +
+                            '<h3>' + value.title + '</h3>' +
+                            '</div>' +
+                            '<div> ' + value.blogtext +
+                            '</div>' +
+                            '<div style="margin-top: 20px">' +
+                            '<span><strong>written by </strong></span>' + value.author +
+                            '<span><strong> on </strong></span>' + value.date_created +
+                            '</div>' +
+                            '</li><br/><br/>'
+                        $('.list-group').prepend(Html);
+                    });
             })
         }
     </script>
