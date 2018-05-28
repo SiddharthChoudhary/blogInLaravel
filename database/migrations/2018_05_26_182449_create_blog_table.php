@@ -17,8 +17,9 @@ class CreateBlogTable extends Migration
         if(!Schema::hasTable("Blog")){
             Schema::create('Blog',function (Blueprint $table){
                 $table->increments('id');
+                $table->text('title');
                 $table->longText('blogtext');
-                $table->longText('date_created');
+                $table->date('date_created');
                 $table->text('author');
                 $table->text('author_id');
                 $table->timestamps();

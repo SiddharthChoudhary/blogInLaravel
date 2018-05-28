@@ -3,12 +3,7 @@
 namespace App;
 
 
-use function GuzzleHttp\Psr7\str;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Redis;
 use Mockery\Exception;
 
 class Blogmodel extends Model
@@ -47,35 +42,4 @@ return false;
         return $result;
 
     }
-
-    public function toShowBlogsbyCategory($request){
-        $category_ids  = [];
-        for($i=0;$i<count($request->category_ids);$i++){
-            array_push($category_ids,$request->category_ids[$i]);
-        }
-        if(count($category_ids)){
-            $blog_id=Blog_Category_Mapping::select('blog_id')->whereIn('category_id',$category_ids)->get();
-            $blogs = Blogmodel::whereIn('id',$blog_id)->distinct()->get();
-        }
-        return $blogs;
-    }
-
-    public function toShowBlogsbyDate($request){
-        $date_selected = $request->date;
-        if($date_selected){
-            $blogs = Blogmodel::where('date_created','<',$date_selected)->orderBy('date_created')->get();
-        }
-        return $blogs;
-
-    }
-
-    public function toShowBlogsbyAuthor($request){
-        $author_name = $request->author_name;
-        if($author_name){
-            $blogs = Blogmodel::where('author','like',$author_name.'%')->distinct()->get();
-        }
-        return $blogs;
-
-    }
-
 }

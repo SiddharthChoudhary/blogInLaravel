@@ -10,9 +10,8 @@ namespace App\Http\Controllers;
 
 use App\Blog_Category_Mapping;
 use App\Blogmodel;
-use App\Category;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class FilterController extends Controller
 {
@@ -24,21 +23,24 @@ class FilterController extends Controller
     }
 
     //functions to filter blogs by category, date, and Author
-
     public function filterTheBlogsByCategory(Request $request)
     {
-        $blogs=$this->Blogmodalobject->toShowBlogsbyCategory($request);
-        return response()->json(['status'=>$blogs]);
-    }
-    public function filterTheBlogsByDate(Request $request)
-    {
-        $blogs=$this->Blogmodalobject->toShowBlogsbyDate($request);
-        return response()->json(['status'=>$blogs]);
-    }
-    public function filterTheBlogsByAuthor(Request $request)
-    {
-        $blogs=$this->Blogmodalobject->toShowBlogsbyAuthor($request);
-        return response()->json(['status'=>$blogs]);
-    }
+        $query=Blogmodel::query();
+        $category_ids  = [];
+        if(count($request->category_ids)){
+            for($i=0;$i<count($request->category_ids);$i++){
+                array_push($category_ids,$request->category_ids[$i]);
+            }
+            $blog_id=Blog_Category_Mapping::select('blog_id')->whereIn('category_id',$category_ids)->get();
+            $query->whereIn('id',$blog_id)->distinct();
+        }
+        if($request->date){
 
+            $query->whereDate('date_created','>',Carbon::parse($request->date))->orderBy('date_created');
+        }
+        if($request->author_name){
+            $query->where('author','like',$request->author_name.'%')->distinct();
+        }
+        return response()->json(['status'=>$query->get()]);
+    }
 }
